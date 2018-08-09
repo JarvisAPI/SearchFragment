@@ -164,7 +164,7 @@ public class SearchView extends BaseSearchView implements OnEditorActionListener
 
             @Override
             public void afterTextChanged(Editable editable) {
-                mPresenter.onTextChanged(mSearchText.getText().toString());
+                mPresenter.onTextChanged(editable.toString());
             }
         });
         mSearchText.setOnKeyImeChangeListener(((int keyCode, KeyEvent event) -> {
@@ -179,7 +179,7 @@ public class SearchView extends BaseSearchView implements OnEditorActionListener
     }
 
     @Override
-    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+    public boolean onEditorAction(TextView textView, int keyCode, KeyEvent keyEvent) {
         if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_UP &&
                 keyEvent.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
             if (mOnSearchClickListener != null) {

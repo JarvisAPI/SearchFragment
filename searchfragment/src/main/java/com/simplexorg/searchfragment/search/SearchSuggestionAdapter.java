@@ -58,7 +58,7 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
     static class SearchSuggestionViewHolder extends RecyclerView.ViewHolder {
         private TextView mSuggestionText;
 
-        private SearchSuggestionViewHolder(View itemView) {
+        SearchSuggestionViewHolder(View itemView) {
             super(itemView);
             mSuggestionText = itemView.findViewById(R.id.search_id_text);
         }
