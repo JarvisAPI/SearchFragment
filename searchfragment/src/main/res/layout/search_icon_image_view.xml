@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_id_image"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:layout_marginEnd="8dp"
+    android:contentDescription="@string/search_app_name"
+    android:background="?selectableItemBackgroundBorderless"
+    android:tint="@color/search_gray_dark"/>

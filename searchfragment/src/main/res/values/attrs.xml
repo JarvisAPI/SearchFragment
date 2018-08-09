@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SearchFragment">
+        <attr name="search_hint" format="string"/>
+        <attr name="search_bar_decorators" format="string"/>
+    </declare-styleable>
+</resources>

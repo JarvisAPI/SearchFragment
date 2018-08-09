@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="search_gray">#ebebeb</color>
+    <color name="search_light_dark_gray">#bdbdbd</color>
+    <color name="search_white">#ffffff</color>
+    <color name="search_gray_dark">#858585</color>
+</resources>

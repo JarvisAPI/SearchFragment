@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.simplexorg.searchfragmenttest.MainActivity"
+    android:id="@+id/root"
+    android:clickable="true"
+    android:focusable="true">
+
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="com.simplexorg.searchfragment.search.SearchFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:search_hint="Search"
+        app:search_bar_decorators="nav|icons|suggest"/>
+
+</FrameLayout>
