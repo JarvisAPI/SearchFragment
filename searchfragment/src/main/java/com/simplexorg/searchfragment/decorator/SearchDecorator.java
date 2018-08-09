@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.simplexorg.searchfragment.search.BaseSearchView;
 import com.simplexorg.searchfragment.search.SearchContract.Presenter;
+import com.simplexorg.searchfragment.search.SearchFragment.OnSearchClickListener;
 
 public abstract class SearchDecorator extends BaseSearchView {
     BaseSearchView mSearchBar;
@@ -87,5 +88,10 @@ public abstract class SearchDecorator extends BaseSearchView {
     @Override
     public void initDisplay() {
         mSearchBar.initDisplay();
+    }
+
+    @Override
+    public void setOnSearchClickListener(OnSearchClickListener onSearchClickListener) {
+        mSearchBar.setOnSearchClickListener(onSearchClickListener);
     }
 }

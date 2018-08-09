@@ -96,7 +96,8 @@ public class NavDrawerSearchDecorator extends SearchDecorator {
     /**
      * Start off as arrow then change to hamburger or vise versa.
      *
-     * @param endArrow true if end should be arrow, false if end should be hamburger.
+     * @param endArrow true if on animation end should be arrow,
+     *                false if on animation end should be hamburger.
      */
     private void setArrow(boolean endArrow) {
         if (endArrow) {

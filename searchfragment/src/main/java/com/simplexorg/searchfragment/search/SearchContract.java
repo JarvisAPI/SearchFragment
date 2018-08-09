@@ -23,8 +23,6 @@ public interface SearchContract {
     }
 
     interface Presenter extends BasePresenter {
-        void search(String text);
-
         void onTextChanged(String text);
 
         void onOutsideClicked();

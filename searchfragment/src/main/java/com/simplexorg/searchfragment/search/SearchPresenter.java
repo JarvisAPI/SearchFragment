@@ -19,11 +19,6 @@ class SearchPresenter implements SearchContract.Presenter {
     }
 
     @Override
-    public void search(String text) {
-        Log.d(TAG, "search(String text)");
-    }
-
-    @Override
     public void onTextChanged(@NonNull String text) {
         if (text.isEmpty()) {
             mSearchView.hideRemoveIcon();

@@ -10,21 +10,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.simplexorg.searchfragment.R;
 import com.simplexorg.searchfragment.search.SearchContract.Presenter;
+import com.simplexorg.searchfragment.search.SearchFragment.OnSearchClickListener;
 import com.simplexorg.searchfragment.view.SearchEditText;
 
-public class SearchView extends BaseSearchView {
-    private interface OnViewAttachListener {
-        void onAttach(View view);
-    }
+import java.util.ArrayList;
+import java.util.List;
+
+public class SearchView extends BaseSearchView implements OnEditorActionListener {
     private static final String TAG = SearchView.class.getSimpleName();
-    private OnViewAttachListener mOnViewAttachListener;
     private SearchEditText mSearchText;
     private Presenter mPresenter;
     private CharSequence mSearchHint;
     private Context mContext;
+
+    private OnSearchClickListener mOnSearchClickListener;
+
+    private List<TextWatcher> mTextWatchers;
 
     public void attach(Context context) {
         mContext = context;
@@ -34,9 +39,11 @@ public class SearchView extends BaseSearchView {
         bindViews(view);
         setupSearchTextListeners();
         setupSearchRemoveIconListener();
-        if (mOnViewAttachListener != null) {
-            mOnViewAttachListener.onAttach(view);
-            mOnViewAttachListener = null;
+        if (mTextWatchers != null) {
+            for (TextWatcher watcher : mTextWatchers) {
+                mSearchText.addTextChangedListener(watcher);
+            }
+            mTextWatchers = null;
         }
     }
 
@@ -57,7 +64,10 @@ public class SearchView extends BaseSearchView {
         if (mSearchText != null) {
             mSearchText.addTextChangedListener(watcher);
         } else {
-            mOnViewAttachListener = (View view) -> mSearchText.addTextChangedListener(watcher);
+            if (mTextWatchers == null) {
+                mTextWatchers = new ArrayList<>();
+            }
+            mTextWatchers.add(watcher);
         }
     }
 
@@ -124,7 +134,6 @@ public class SearchView extends BaseSearchView {
         Log.d(TAG, "initDisplay: focus: " + mSearchText.isFocused());
     }
 
-
     private void setupSearchRemoveIconListener() {
         mSearchText.setOnTouchListener((View view, MotionEvent motionEvent) -> {
                 final int DRAWABLE_RIGHT = 2;
@@ -166,13 +175,23 @@ public class SearchView extends BaseSearchView {
             }
             return false;
         }));
-        mSearchText.setOnEditorActionListener((TextView textView, int keyCode, KeyEvent keyEvent) -> {
-                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_UP &&
-                        keyEvent.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
-                    mPresenter.search(mSearchText.getText().toString());
-                    return true;
-                }
-                return false;
-            });
+        mSearchText.setOnEditorActionListener(this);
+    }
+
+    @Override
+    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+        if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_UP &&
+                keyEvent.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
+            if (mOnSearchClickListener != null) {
+                mOnSearchClickListener.onSearchClick(textView.getText().toString());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setOnSearchClickListener(OnSearchClickListener onSearchClickListener) {
+        mOnSearchClickListener = onSearchClickListener;
     }
 }

@@ -37,8 +37,11 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
     @Override
     public void onBindViewHolder(@NonNull SearchSuggestionViewHolder holder, int position) {
         holder.mSuggestionText.setText(mSuggestions.get(position));
-        holder.itemView.setOnClickListener((view) ->
-                mOnSuggestionClickListener.onSuggestionClick(holder.mSuggestionText.getText().toString()));
+        holder.itemView.setOnClickListener((view) -> {
+            if (mOnSuggestionClickListener != null) {
+                mOnSuggestionClickListener.onSuggestionClick(holder.mSuggestionText.getText().toString());
+            }
+        });
     }
 
     @Override
