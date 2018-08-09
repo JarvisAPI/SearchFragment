@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -38,9 +39,16 @@ public class SearchFragment extends Fragment {
     private NavDrawerSearchDecorator mNavDecor;
     private SearchIconDecorator mIconDecor;
     private SearchSuggestionDecorator mSuggestDecor;
+    private Factory mFactory;
 
     public SearchFragment() {
         mViewInflated = false;
+        mFactory = new Factory();
+    }
+
+    @VisibleForTesting
+    void setFactory(Factory factory) {
+        mFactory = factory;
     }
 
     @Override
@@ -85,21 +93,24 @@ public class SearchFragment extends Fragment {
         final String DECOR_NAV = "nav";
         final String DECOR_ICONS = "icons";
         final String DECOR_SUGGEST = "suggest";
-        mSearchBaseView = new SearchView();
+        mSearchBaseView = mFactory.createBaseSearchView();
 
+        if (decorators == null) {
+            return;
+        }
         String[] decors = decorators.toString().split("\\|");
         for (String decor : decors) {
             switch (decor) {
                 case DECOR_NAV:
-                    mNavDecor = new NavDrawerSearchDecorator(mSearchBaseView);
+                    mNavDecor = mFactory.wrapNavDecorator(mSearchBaseView);
                     mSearchBaseView = mNavDecor;
                     break;
                 case DECOR_ICONS:
-                    mIconDecor = new SearchIconDecorator(mSearchBaseView);
+                    mIconDecor = mFactory.wrapIconDecorator(mSearchBaseView);
                     mSearchBaseView = mIconDecor;
                     break;
                 case DECOR_SUGGEST:
-                    mSuggestDecor = new SearchSuggestionDecorator(mSearchBaseView);
+                    mSuggestDecor = mFactory.wrapSuggestionDecorator(mSearchBaseView);
                     mSearchBaseView = mSuggestDecor;
                     break;
             }
@@ -172,12 +183,6 @@ public class SearchFragment extends Fragment {
     public void updateSuggestion(SearchData searchData) {
         if (mSuggestDecor != null) {
             mSuggestDecor.updateSuggestions(searchData);
-        } else if (!mViewInflated) {
-            addOnViewInflatedListener(() -> {
-                if (mSuggestDecor != null) {
-                    mSuggestDecor.updateSuggestions(searchData);
-                }
-            });
         }
     }
 
