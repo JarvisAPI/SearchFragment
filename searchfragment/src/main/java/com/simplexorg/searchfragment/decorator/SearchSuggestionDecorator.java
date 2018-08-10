@@ -3,7 +3,6 @@ package com.simplexorg.searchfragment.decorator;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -14,6 +13,7 @@ import com.simplexorg.searchfragment.search.SearchData;
 import com.simplexorg.searchfragment.search.SearchSuggestionAdapter;
 import com.simplexorg.searchfragment.search.SearchSuggestionSupplier;
 import com.simplexorg.searchfragment.search.SearchSuggestionSupplier.OnSuggestionObtainedListener;
+import com.simplexorg.searchfragment.util.Helper;
 import com.simplexorg.searchfragment.view.SearchEditText;
 
 import java.util.List;
@@ -45,7 +45,8 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
         RelativeLayout root = view.findViewById(R.id.search_id_root);
         mCardView = view.findViewById(R.id.search_id_card_view);
 
-        View suggestionView = LayoutInflater.from(view.getContext())
+        View suggestionView = Helper.getInstance()
+                .generateLayoutInflater(view.getContext())
                 .inflate(R.layout.search_suggestion_list, root);
         mRecyclerList = suggestionView.findViewById(R.id.search_id_list);
         mRecyclerListParent = suggestionView.findViewById(R.id.search_id_suggest_root);
@@ -68,9 +69,10 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
         mSearchBar.initDisplay();
 
         if (mSuggestionAdapter == null) {
-            mSuggestionAdapter = new SearchSuggestionAdapter();
+            mSuggestionAdapter = Helper.getInstance().generateSearchSuggestionAdapter();
             mSuggestionAdapter.setOnSuggestionClickListener(mOnSuggestionClickListener);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(mRecyclerList.getContext());
+            LinearLayoutManager layoutManager = Helper.getInstance()
+                    .generateLinearLayoutManager(mRecyclerList.getContext());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             mRecyclerList.setLayoutManager(layoutManager);
             mRecyclerList.setAdapter(mSuggestionAdapter);

@@ -18,7 +18,9 @@ import com.simplexorg.searchfragment.decorator.SearchIconDecorator;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator.OnSuggestionClickListener;
 import com.simplexorg.searchfragment.search.SearchFragment.OnSearchClickListener;
+import com.simplexorg.searchfragment.util.Factory;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -43,7 +45,12 @@ public class SearchFragmentUnitTest {
         initMocks(this);
         when(mFactory.createBaseSearchView()).thenReturn(mSearchBaseView);
         mSearchFragment = new SearchFragment();
-        mSearchFragment.setFactory(mFactory);
+        Factory.setFactory(mFactory);
+    }
+
+    @After
+    public void cleanup() {
+        Factory.setFactory(null);
     }
 
     private void fragmentOnInflate() {
@@ -231,24 +238,22 @@ public class SearchFragmentUnitTest {
     }
 
     @Test
-    public void test_setOnSearchClickListenerTo_suggestion_decorator_before_fragmentInflated() {
+    public void test_setOnSearchClickListenerTo_before_fragmentInflated() {
         OnSearchClickListener onSearchClickListener = mock(OnSearchClickListener.class);
         mSearchFragment.setOnSearchClickListener(onSearchClickListener);
 
-        SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
         fragmentOnInflate();
 
-        verify(suggestDecor).setOnSearchClickListener(onSearchClickListener);
+        verify(mSearchBaseView).setOnSearchClickListener(onSearchClickListener);
     }
 
     @Test
     public void test_setOnSearchClickListenerTo_suggestion_decorator_after_fragmentInflated() {
-        SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
         fragmentOnInflate();
 
         OnSearchClickListener onSearchClickListener = mock(OnSearchClickListener.class);
         mSearchFragment.setOnSearchClickListener(onSearchClickListener);
 
-        verify(suggestDecor).setOnSearchClickListener(onSearchClickListener);
+        verify(mSearchBaseView).setOnSearchClickListener(onSearchClickListener);
     }
 }

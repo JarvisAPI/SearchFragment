@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -19,6 +18,7 @@ import com.simplexorg.searchfragment.decorator.NavDrawerSearchDecorator.OnMenuCl
 import com.simplexorg.searchfragment.decorator.SearchIconDecorator;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator.OnSuggestionClickListener;
+import com.simplexorg.searchfragment.util.Factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,16 +39,9 @@ public class SearchFragment extends Fragment {
     private NavDrawerSearchDecorator mNavDecor;
     private SearchIconDecorator mIconDecor;
     private SearchSuggestionDecorator mSuggestDecor;
-    private Factory mFactory;
 
     public SearchFragment() {
         mViewInflated = false;
-        mFactory = new Factory();
-    }
-
-    @VisibleForTesting
-    void setFactory(Factory factory) {
-        mFactory = factory;
     }
 
     @Override
@@ -93,7 +86,7 @@ public class SearchFragment extends Fragment {
         final String DECOR_NAV = "nav";
         final String DECOR_ICONS = "icons";
         final String DECOR_SUGGEST = "suggest";
-        mSearchBaseView = mFactory.createBaseSearchView();
+        mSearchBaseView = Factory.getInstance().createBaseSearchView();
 
         if (decorators == null) {
             return;
@@ -102,16 +95,22 @@ public class SearchFragment extends Fragment {
         for (String decor : decors) {
             switch (decor) {
                 case DECOR_NAV:
-                    mNavDecor = mFactory.wrapNavDecorator(mSearchBaseView);
-                    mSearchBaseView = mNavDecor;
+                    if (mNavDecor == null) {
+                        mNavDecor = Factory.getInstance().wrapNavDecorator(mSearchBaseView);
+                        mSearchBaseView = mNavDecor;
+                    }
                     break;
                 case DECOR_ICONS:
-                    mIconDecor = mFactory.wrapIconDecorator(mSearchBaseView);
-                    mSearchBaseView = mIconDecor;
+                    if (mIconDecor == null) {
+                        mIconDecor = Factory.getInstance().wrapIconDecorator(mSearchBaseView);
+                        mSearchBaseView = mIconDecor;
+                    }
                     break;
                 case DECOR_SUGGEST:
-                    mSuggestDecor = mFactory.wrapSuggestionDecorator(mSearchBaseView);
-                    mSearchBaseView = mSuggestDecor;
+                    if (mSuggestDecor == null) {
+                        mSuggestDecor = Factory.getInstance().wrapSuggestionDecorator(mSearchBaseView);
+                        mSearchBaseView = mSuggestDecor;
+                    }
                     break;
             }
         }
@@ -137,6 +136,7 @@ public class SearchFragment extends Fragment {
 
     /**
      * Add icons to the search bar if it is decorated with "icons".
+     * Must be called in the onCreate method.
      * @param resourceIds drawable resource ids for the icons.
      */
     public void addIcons(int[] resourceIds) {
