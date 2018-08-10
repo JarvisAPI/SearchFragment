@@ -10,7 +10,7 @@
         </shape>
     </item>
     <item>
-        <bitmap android:src="@drawable/search_ic_close_black_24dp"
+        <bitmap android:src="@drawable/search_baseline_close_black_18"
                 android:tint="@color/search_white"/>
     </item>
 </layer-list>
