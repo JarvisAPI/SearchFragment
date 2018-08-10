@@ -1,6 +1,7 @@
 package com.simplexorg.searchfragment.decorator;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,12 +41,14 @@ public class SearchSuggestionDecoratorUnitTest {
     @Mock private LayoutInflater mLayoutInflater;
     @Mock private View mView;
     @Mock private RelativeLayout mRoot;
+    @Mock private SearchSuggestionAdapter mAdapter;
 
     @Before
     public void setup() {
         initMocks(this);
         mockSuggestViews();
 
+        when(mHelper.generateSearchSuggestionAdapter()).thenReturn(mAdapter);
         mSuggestDecor = new SearchSuggestionDecorator(mSearchView);
         when(mView.findViewById(R.id.search_id_search)).thenReturn(mSearchText);
         when(mView.findViewById(R.id.search_id_root)).thenReturn(mRoot);
@@ -86,8 +89,6 @@ public class SearchSuggestionDecoratorUnitTest {
     public void test_initDisplay() {
         when(mCardView.getId()).thenReturn(7);
 
-        SearchSuggestionAdapter adapter = mock(SearchSuggestionAdapter.class);
-        when(mHelper.generateSearchSuggestionAdapter()).thenReturn(adapter);
         LinearLayoutManager linearLayoutManager = mock(LinearLayoutManager.class);
         when(mHelper.generateLinearLayoutManager(any(Context.class))).thenReturn(linearLayoutManager);
 
@@ -99,10 +100,10 @@ public class SearchSuggestionDecoratorUnitTest {
         mSuggestDecor.setOnSuggestionClickListener(onSuggestionClickListener);
         mSuggestDecor.initDisplay();
 
-        verify(adapter).setOnSuggestionClickListener(onSuggestionClickListener);
+        verify(mAdapter).setOnSuggestionClickListener(onSuggestionClickListener);
         verify(linearLayoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         verify(mRecyclerList).setLayoutManager(linearLayoutManager);
-        verify(mRecyclerList).setAdapter(adapter);
+        verify(mRecyclerList).setAdapter(mAdapter);
 
         verify(params).addRule(RelativeLayout.BELOW, mCardView.getId());
         verify(mRecyclerListParent).setLayoutParams(params);
@@ -112,5 +113,21 @@ public class SearchSuggestionDecoratorUnitTest {
     public void test_onSuggestionObtainedWithNotAdapter() {
         mSuggestDecor.onSuggestionObtained(new ArrayList<>());
         // Should not throw null pointer exception.
+    }
+
+    @Test
+    public void test_onSaveInstanceState() {
+        Bundle outState = mock(Bundle.class);
+        mSuggestDecor.onSaveInstanceState(outState);
+
+        verify(mAdapter).onSaveInstanceState(outState);
+    }
+
+    @Test
+    public void test_onRestoreSavedState() {
+        Bundle savedInstanceState = mock(Bundle.class);
+        mSuggestDecor.onRestoreSavedState(savedInstanceState);
+
+        verify(mAdapter).onRestoreSavedState(savedInstanceState);
     }
 }

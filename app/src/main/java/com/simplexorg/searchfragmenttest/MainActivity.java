@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
             List<String> suggestions = new ArrayList<>();
             if (query.length() >= 1) {
                 suggestions.add("suggestion 0");
-
             }
             if (query.length() >= 2) {
                 suggestions.add("suggestion 1");

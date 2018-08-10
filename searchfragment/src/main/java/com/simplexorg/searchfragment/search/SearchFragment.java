@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -32,6 +33,7 @@ public class SearchFragment extends Fragment {
     private interface OnViewInflatedListener {
         void onViewInflated();
     }
+    static final String SAVED_SUGGEST_DECOR = "savedSuggestDecor";
     private List<OnViewInflatedListener> mOnViewInflatedListeners;
     private boolean mViewInflated;
 
@@ -60,6 +62,35 @@ public class SearchFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mSearchBaseView.start();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mSuggestDecor != null) {
+            outState.putBoolean(SAVED_SUGGEST_DECOR, true);
+            mSuggestDecor.onSaveInstanceState(outState);
+        } else {
+            outState.putBoolean(SAVED_SUGGEST_DECOR, false);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getBoolean(SAVED_SUGGEST_DECOR)) {
+                if (mSuggestDecor != null) {
+                    mSuggestDecor.onRestoreSavedState(savedInstanceState);
+                } else if (!mViewInflated) {
+                    addOnViewInflatedListener(() -> {
+                        if (mSuggestDecor != null) {
+                            mSuggestDecor.onRestoreSavedState(savedInstanceState);
+                        }
+                    });
+                }
+            }
+        }
     }
 
     @Override

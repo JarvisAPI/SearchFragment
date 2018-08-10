@@ -1,5 +1,6 @@
 package com.simplexorg.searchfragment.search;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +17,8 @@ import java.util.List;
 
 public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggestionViewHolder> {
 
-    private List<String> mSuggestions;
+    static final String SAVED_SUGGESTIONS = "suggestions";
+    private ArrayList<String> mSuggestions;
     private OnSuggestionClickListener mOnSuggestionClickListener;
 
     public SearchSuggestionAdapter() {
@@ -47,6 +49,15 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
     @Override
     public int getItemCount() {
         return mSuggestions.size();
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putStringArrayList(SAVED_SUGGESTIONS, mSuggestions);
+    }
+
+    public void onRestoreSavedState(@NonNull Bundle savedInstanceState) {
+        mSuggestions = savedInstanceState.getStringArrayList(SAVED_SUGGESTIONS);
+        notifyDataSetChanged();
     }
 
     public void setSuggestions(List<String> suggestions) {

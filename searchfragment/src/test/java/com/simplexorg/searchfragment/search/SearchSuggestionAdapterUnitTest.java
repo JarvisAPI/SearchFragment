@@ -1,5 +1,6 @@
 package com.simplexorg.searchfragment.search;
 
+import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -15,6 +16,9 @@ import org.mockito.ArgumentCaptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.simplexorg.searchfragment.search.SearchSuggestionAdapter.SAVED_SUGGESTIONS;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,6 +31,22 @@ public class SearchSuggestionAdapterUnitTest {
         mAdapter = new SearchSuggestionAdapter();
     }
 
+    /**
+     * Check exception to see if it can be ignored.
+     * @param ex the exception.
+     */
+    private void checkException(NullPointerException ex) {
+        boolean ignoreException = false;
+        for (StackTraceElement trace : ex.getStackTrace()) {
+            if (trace.toString().contains("notifyDataSetChanged")) {
+                ignoreException = true;
+            }
+        }
+        if (!ignoreException) {
+            throw ex;
+        }
+    }
+
     @Test
     public void test_onBindViewHolder() {
         List<String> suggestions = new ArrayList<>();
@@ -35,15 +55,7 @@ public class SearchSuggestionAdapterUnitTest {
         try {
             mAdapter.setSuggestions(suggestions);
         } catch (NullPointerException ex) {
-            boolean ignoreException = false;
-            for (StackTraceElement trace : ex.getStackTrace()) {
-                if (trace.toString().contains("notifyDataSetChanged")) {
-                    ignoreException = true;
-                }
-            }
-            if (!ignoreException) {
-                throw ex;
-            }
+            checkException(ex);
         }
 
         View itemView = mock(View.class);
@@ -67,5 +79,24 @@ public class SearchSuggestionAdapterUnitTest {
         clickListener.onClick(itemView);
 
         verify(onSuggestionClickListener).onSuggestionClick(suggestions.get(position));
+    }
+
+    @Test
+    public void test_onSaveInstanceState() {
+        Bundle outState = mock(Bundle.class);
+        mAdapter.onSaveInstanceState(outState);
+
+        verify(outState).putStringArrayList(eq(SAVED_SUGGESTIONS), anyObject());
+    }
+
+    @Test
+    public void test_onRestoreSavedState() {
+        Bundle savedInstanceState = mock(Bundle.class);
+        try {
+            mAdapter.onRestoreSavedState(savedInstanceState);
+        } catch(NullPointerException ex) {
+            checkException(ex);
+        }
+        verify(savedInstanceState).getStringArrayList(SAVED_SUGGESTIONS);
     }
 }

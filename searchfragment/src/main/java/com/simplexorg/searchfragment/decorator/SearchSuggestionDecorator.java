@@ -1,5 +1,7 @@
 package com.simplexorg.searchfragment.decorator;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +22,7 @@ import java.util.List;
 
 public class SearchSuggestionDecorator extends SearchDecorator implements OnSuggestionObtainedListener {
     private static final String TAG = SearchSuggestionDecorator.class.getSimpleName();
+
     public interface OnSuggestionClickListener {
         void onSuggestionClick(String suggestion);
     }
@@ -35,6 +38,7 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
 
     public SearchSuggestionDecorator(BaseSearchView searchBar) {
         super(searchBar);
+        mSuggestionAdapter = Helper.getInstance().generateSearchSuggestionAdapter();
     }
 
     @Override
@@ -68,19 +72,16 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
     public void initDisplay() {
         mSearchBar.initDisplay();
 
-        if (mSuggestionAdapter == null) {
-            mSuggestionAdapter = Helper.getInstance().generateSearchSuggestionAdapter();
-            mSuggestionAdapter.setOnSuggestionClickListener(mOnSuggestionClickListener);
-            LinearLayoutManager layoutManager = Helper.getInstance()
-                    .generateLinearLayoutManager(mRecyclerList.getContext());
-            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            mRecyclerList.setLayoutManager(layoutManager);
-            mRecyclerList.setAdapter(mSuggestionAdapter);
+        mSuggestionAdapter.setOnSuggestionClickListener(mOnSuggestionClickListener);
+        LinearLayoutManager layoutManager = Helper.getInstance()
+                .generateLinearLayoutManager(mRecyclerList.getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerList.setLayoutManager(layoutManager);
+        mRecyclerList.setAdapter(mSuggestionAdapter);
 
-            LayoutParams params = (LayoutParams) mRecyclerListParent.getLayoutParams();
-            params.addRule(RelativeLayout.BELOW, mCardView.getId());
-            mRecyclerListParent.setLayoutParams(params);
-        }
+        LayoutParams params = (LayoutParams) mRecyclerListParent.getLayoutParams();
+        params.addRule(RelativeLayout.BELOW, mCardView.getId());
+        mRecyclerListParent.setLayoutParams(params);
     }
 
     public void updateSuggestions(SearchData searchData) {
@@ -101,6 +102,18 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
     public void onSuggestionObtained(List<String> suggestions) {
         if (mSuggestionAdapter != null) {
             mSuggestionAdapter.setSuggestions(suggestions);
+        }
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        if (mSuggestionAdapter != null) {
+            mSuggestionAdapter.onSaveInstanceState(outState);
+        }
+    }
+
+    public void onRestoreSavedState(@NonNull Bundle savedInstanceState) {
+        if (mSuggestionAdapter != null) {
+            mSuggestionAdapter.onRestoreSavedState(savedInstanceState);
         }
     }
 }

@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import static com.simplexorg.searchfragment.search.SearchFragment.SAVED_SUGGEST_DECOR;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
@@ -199,7 +200,6 @@ public class SearchFragmentUnitTest {
         mSearchFragment.setOnSuggestionClickListener(onSuggestionClickListener);
 
         SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
-        fragmentOnInflate();
 
         verify(suggestDecor).setOnSuggestionClickListener(onSuggestionClickListener);
     }
@@ -207,7 +207,6 @@ public class SearchFragmentUnitTest {
     @Test
     public void test_setOnSuggestionClickListenerTo_suggestion_decorator_after_fragmentInflated() {
         SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
-        fragmentOnInflate();
 
         OnSuggestionClickListener onSuggestionClickListener = mock(OnSuggestionClickListener.class);
         mSearchFragment.setOnSuggestionClickListener(onSuggestionClickListener);
@@ -221,7 +220,6 @@ public class SearchFragmentUnitTest {
         mSearchFragment.setSearchSuggestionSupplier(searchSuggestionSupplier);
 
         SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
-        fragmentOnInflate();
 
         verify(suggestDecor).setSearchSuggestionSupplier(searchSuggestionSupplier);
     }
@@ -229,7 +227,6 @@ public class SearchFragmentUnitTest {
     @Test
     public void test_setSearchSuggestionSupplierTo_suggestion_decorator_after_fragmentInflated() {
         SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
-        fragmentOnInflate();
 
         SearchSuggestionSupplier searchSuggestionSupplier = mock(SearchSuggestionSupplier.class);
         mSearchFragment.setSearchSuggestionSupplier(searchSuggestionSupplier);
@@ -255,5 +252,54 @@ public class SearchFragmentUnitTest {
         mSearchFragment.setOnSearchClickListener(onSearchClickListener);
 
         verify(mSearchBaseView).setOnSearchClickListener(onSearchClickListener);
+    }
+
+    @Test
+    public void test_onSaveInstanceState_whenSuggestDecorNotNull() {
+        SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
+
+        Bundle outState = mock(Bundle.class);
+        mSearchFragment.onSaveInstanceState(outState);
+
+        verify(outState).putBoolean(SAVED_SUGGEST_DECOR, true);
+        verify(suggestDecor).onSaveInstanceState(outState);
+    }
+
+    @Test
+    public void test_onSaveInstanceState_whenSuggestDecorNull() {
+        Bundle outState = mock(Bundle.class);
+        mSearchFragment.onSaveInstanceState(outState);
+
+        verify(outState).putBoolean(SAVED_SUGGEST_DECOR, false);
+    }
+
+    @Test
+    public void test_onActivityCreated_nullSavedInstanceState() {
+        mSearchFragment.onActivityCreated(null);
+        // Should not throw null pointer exception.
+    }
+
+    @Test
+    public void test_onActivityCreated_before_fragmentInflated() {
+        Bundle savedInstanceState = mock(Bundle.class);
+        when(savedInstanceState.getBoolean(SearchFragment.SAVED_SUGGEST_DECOR)).thenReturn(true);
+
+        mSearchFragment.onActivityCreated(savedInstanceState);
+
+        SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
+
+        verify(suggestDecor).onRestoreSavedState(savedInstanceState);
+    }
+
+    @Test
+    public void test_onActivityCreated_after_fragmentInflated() {
+        SearchSuggestionDecorator suggestDecor = inflateSuggestDecor();
+
+        Bundle savedInstanceState = mock(Bundle.class);
+        when(savedInstanceState.getBoolean(SearchFragment.SAVED_SUGGEST_DECOR)).thenReturn(true);
+
+        mSearchFragment.onActivityCreated(savedInstanceState);
+
+        verify(suggestDecor).onRestoreSavedState(savedInstanceState);
     }
 }
