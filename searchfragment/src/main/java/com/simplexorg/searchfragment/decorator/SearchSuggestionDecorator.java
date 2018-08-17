@@ -98,22 +98,21 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
         mSearchSuggestionSupplier = searchSuggestionSupplier;
     }
 
+    public void clearSuggestions() {
+        mSuggestionAdapter.clearSuggestions();
+    }
+
     @Override
     public void onSuggestionObtained(List<String> suggestions) {
-        if (mSuggestionAdapter != null) {
-            mSuggestionAdapter.setSuggestions(suggestions);
-        }
+        mSuggestionAdapter.setSuggestions(suggestions);
+
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        if (mSuggestionAdapter != null) {
-            mSuggestionAdapter.onSaveInstanceState(outState);
-        }
+        mSuggestionAdapter.onSaveInstanceState(outState);
     }
 
     public void onRestoreSavedState(@NonNull Bundle savedInstanceState) {
-        if (mSuggestionAdapter != null) {
-            mSuggestionAdapter.onRestoreSavedState(savedInstanceState);
-        }
+        mSuggestionAdapter.onRestoreSavedState(savedInstanceState);
     }
 }

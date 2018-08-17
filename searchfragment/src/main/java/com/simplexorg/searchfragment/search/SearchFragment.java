@@ -271,4 +271,10 @@ public class SearchFragment extends Fragment {
         }
         mOnViewInflatedListeners.add(listener);
     }
+
+    public void clearSuggestions() {
+        if (mSuggestDecor != null) {
+            mSuggestDecor.clearSuggestions();
+        }
+    }
 }

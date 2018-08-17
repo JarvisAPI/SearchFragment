@@ -66,6 +66,11 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
         notifyDataSetChanged();
     }
 
+    public void clearSuggestions() {
+        mSuggestions.clear();
+        notifyDataSetChanged();
+    }
+
     static class SearchSuggestionViewHolder extends RecyclerView.ViewHolder {
         private TextView mSuggestionText;
 
