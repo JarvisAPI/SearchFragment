@@ -18,7 +18,7 @@ import com.simplexorg.searchfragment.decorator.SearchIconDecorator;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator.OnSuggestionClickListener;
 import com.simplexorg.searchfragment.search.SearchFragment.OnSearchClickListener;
-import com.simplexorg.searchfragment.util.Factory;
+import com.simplexorg.searchfragment.util.SearchFactory;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +36,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class SearchFragmentUnitTest {
     private SearchFragment mSearchFragment;
-    @Mock private Factory mFactory;
+    @Mock private SearchFactory mFactory;
     @Mock private Context mContext;
     @Mock private TypedArray typedArray;
     @Mock private BaseSearchView mSearchBaseView;
@@ -46,12 +46,12 @@ public class SearchFragmentUnitTest {
         initMocks(this);
         when(mFactory.createBaseSearchView()).thenReturn(mSearchBaseView);
         mSearchFragment = new SearchFragment();
-        Factory.setFactory(mFactory);
+        SearchFactory.setFactory(mFactory);
     }
 
     @After
     public void cleanup() {
-        Factory.setFactory(null);
+        SearchFactory.setFactory(null);
     }
 
     private void fragmentOnInflate() {

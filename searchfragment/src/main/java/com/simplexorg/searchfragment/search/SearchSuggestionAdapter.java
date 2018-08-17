@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.simplexorg.searchfragment.R;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator.OnSuggestionClickListener;
+import com.simplexorg.searchfragment.model.Suggestion;
 import com.simplexorg.searchfragment.search.SearchSuggestionAdapter.SearchSuggestionViewHolder;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggestionViewHolder> {
 
     static final String SAVED_SUGGESTIONS = "suggestions";
-    private ArrayList<String> mSuggestions;
+    private ArrayList<Suggestion> mSuggestions;
     private OnSuggestionClickListener mOnSuggestionClickListener;
 
     public SearchSuggestionAdapter() {
@@ -38,10 +39,10 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
 
     @Override
     public void onBindViewHolder(@NonNull SearchSuggestionViewHolder holder, int position) {
-        holder.mSuggestionText.setText(mSuggestions.get(position));
+        holder.mSuggestionText.setText(mSuggestions.get(position).suggestion);
         holder.itemView.setOnClickListener((view) -> {
             if (mOnSuggestionClickListener != null) {
-                mOnSuggestionClickListener.onSuggestionClick(holder.mSuggestionText.getText().toString());
+                mOnSuggestionClickListener.onSuggestionClick(mSuggestions.get(position));
             }
         });
     }
@@ -52,15 +53,15 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putStringArrayList(SAVED_SUGGESTIONS, mSuggestions);
+        outState.putParcelableArrayList(SAVED_SUGGESTIONS, mSuggestions);
     }
 
     public void onRestoreSavedState(@NonNull Bundle savedInstanceState) {
-        mSuggestions = savedInstanceState.getStringArrayList(SAVED_SUGGESTIONS);
+        mSuggestions = savedInstanceState.getParcelableArrayList(SAVED_SUGGESTIONS);
         notifyDataSetChanged();
     }
 
-    public void setSuggestions(List<String> suggestions) {
+    public void setSuggestions(List<Suggestion> suggestions) {
         mSuggestions.clear();
         mSuggestions.addAll(suggestions);
         notifyDataSetChanged();

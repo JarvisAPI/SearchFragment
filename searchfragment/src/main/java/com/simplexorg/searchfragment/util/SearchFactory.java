@@ -8,10 +8,10 @@ import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator;
 import com.simplexorg.searchfragment.search.BaseSearchView;
 import com.simplexorg.searchfragment.search.SearchView;
 
-public class Factory {
-    private static Factory mFactory;
+public class SearchFactory {
+    private static SearchFactory mFactory;
 
-    private Factory() {
+    private SearchFactory() {
 
     }
 
@@ -31,15 +31,24 @@ public class Factory {
         return new SearchSuggestionDecorator(baseSearchView);
     }
 
-    public static Factory getInstance() {
+    public ClassLoader getClassLoader(String className) {
+        try {
+            return Class.forName(className).getClassLoader();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public static SearchFactory getInstance() {
         if (mFactory == null) {
-            mFactory = new Factory();
+            mFactory = new SearchFactory();
         }
         return mFactory;
     }
 
     @VisibleForTesting
-    public static void setFactory(Factory factory) {
+    public static void setFactory(SearchFactory factory) {
         mFactory = factory;
     }
 }

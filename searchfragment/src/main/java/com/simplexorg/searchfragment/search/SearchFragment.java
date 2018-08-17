@@ -19,7 +19,7 @@ import com.simplexorg.searchfragment.decorator.NavDrawerSearchDecorator.OnMenuCl
 import com.simplexorg.searchfragment.decorator.SearchIconDecorator;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator.OnSuggestionClickListener;
-import com.simplexorg.searchfragment.util.Factory;
+import com.simplexorg.searchfragment.util.SearchFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +117,7 @@ public class SearchFragment extends Fragment {
         final String DECOR_NAV = "nav";
         final String DECOR_ICONS = "icons";
         final String DECOR_SUGGEST = "suggest";
-        mSearchBaseView = Factory.getInstance().createBaseSearchView();
+        mSearchBaseView = SearchFactory.getInstance().createBaseSearchView();
 
         if (decorators == null) {
             return;
@@ -127,19 +127,19 @@ public class SearchFragment extends Fragment {
             switch (decor) {
                 case DECOR_NAV:
                     if (mNavDecor == null) {
-                        mNavDecor = Factory.getInstance().wrapNavDecorator(mSearchBaseView);
+                        mNavDecor = SearchFactory.getInstance().wrapNavDecorator(mSearchBaseView);
                         mSearchBaseView = mNavDecor;
                     }
                     break;
                 case DECOR_ICONS:
                     if (mIconDecor == null) {
-                        mIconDecor = Factory.getInstance().wrapIconDecorator(mSearchBaseView);
+                        mIconDecor = SearchFactory.getInstance().wrapIconDecorator(mSearchBaseView);
                         mSearchBaseView = mIconDecor;
                     }
                     break;
                 case DECOR_SUGGEST:
                     if (mSuggestDecor == null) {
-                        mSuggestDecor = Factory.getInstance().wrapSuggestionDecorator(mSearchBaseView);
+                        mSuggestDecor = SearchFactory.getInstance().wrapSuggestionDecorator(mSearchBaseView);
                         mSearchBaseView = mSuggestDecor;
                     }
                     break;

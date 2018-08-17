@@ -1,13 +1,17 @@
 package com.simplexorg.searchfragment.search;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.simplexorg.searchfragment.R;
 import com.simplexorg.searchfragment.decorator.SearchSuggestionDecorator.OnSuggestionClickListener;
+import com.simplexorg.searchfragment.model.Suggestion;
 import com.simplexorg.searchfragment.search.SearchSuggestionAdapter.SearchSuggestionViewHolder;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,23 +53,24 @@ public class SearchSuggestionAdapterUnitTest {
 
     @Test
     public void test_onBindViewHolder() {
-        List<String> suggestions = new ArrayList<>();
+        List<Suggestion> suggestions = new ArrayList<>();
         int position = 0;
-        suggestions.add("one");
+        Suggestion suggestion = new Suggestion("suggest", mock(Parcelable.class), "className");
+        suggestions.add(suggestion);
         try {
             mAdapter.setSuggestions(suggestions);
+            Assert.fail("Should have thrown Exception");
         } catch (NullPointerException ex) {
             checkException(ex);
         }
 
         View itemView = mock(View.class);
         TextView suggestionText = mock(TextView.class);
-        when(suggestionText.getText()).thenReturn(suggestions.get(position));
         when(itemView.findViewById(R.id.search_id_text)).thenReturn(suggestionText);
         SearchSuggestionViewHolder viewHolder = new SearchSuggestionViewHolder(itemView);
 
         mAdapter.onBindViewHolder(viewHolder, position);
-        verify(suggestionText).setText(suggestions.get(position));
+        verify(suggestionText).setText(suggestions.get(position).suggestion);
 
         ArgumentCaptor<OnClickListener> argumentCaptor = ArgumentCaptor.forClass(OnClickListener.class);
         verify(itemView).setOnClickListener(argumentCaptor.capture());
@@ -86,7 +91,7 @@ public class SearchSuggestionAdapterUnitTest {
         Bundle outState = mock(Bundle.class);
         mAdapter.onSaveInstanceState(outState);
 
-        verify(outState).putStringArrayList(eq(SAVED_SUGGESTIONS), anyObject());
+        verify(outState).putParcelableArrayList(eq(SAVED_SUGGESTIONS), anyObject());
     }
 
     @Test
@@ -97,6 +102,16 @@ public class SearchSuggestionAdapterUnitTest {
         } catch(NullPointerException ex) {
             checkException(ex);
         }
-        verify(savedInstanceState).getStringArrayList(SAVED_SUGGESTIONS);
+        verify(savedInstanceState).getParcelableArrayList(SAVED_SUGGESTIONS);
+    }
+
+    @Test
+    public void test_clearSuggestions() {
+        try {
+            mAdapter.clearSuggestions();
+            Assert.fail("Should have thrown Exception");
+        } catch (NullPointerException ex) {
+            checkException(ex);
+        }
     }
 }

@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.simplexorg.searchfragment.R;
+import com.simplexorg.searchfragment.model.Suggestion;
 import com.simplexorg.searchfragment.search.BaseSearchView;
 import com.simplexorg.searchfragment.search.SearchData;
 import com.simplexorg.searchfragment.search.SearchSuggestionAdapter;
@@ -24,7 +25,7 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
     private static final String TAG = SearchSuggestionDecorator.class.getSimpleName();
 
     public interface OnSuggestionClickListener {
-        void onSuggestionClick(String suggestion);
+        void onSuggestionClick(Suggestion suggestion);
     }
 
     private OnSuggestionClickListener mOnSuggestionClickListener;
@@ -103,7 +104,7 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
     }
 
     @Override
-    public void onSuggestionObtained(List<String> suggestions) {
+    public void onSuggestionObtained(List<Suggestion> suggestions) {
         mSuggestionAdapter.setSuggestions(suggestions);
 
     }
