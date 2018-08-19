@@ -26,6 +26,11 @@ public abstract class SearchDecorator extends BaseSearchView {
     }
 
     @Override
+    public void setSearchText(String text) {
+        mSearchBar.setSearchText(text);
+    }
+
+    @Override
     public void setPresenter(Presenter presenter) {
         mSearchBar.setPresenter(presenter);
     }

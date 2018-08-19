@@ -15,6 +15,7 @@ import android.widget.TextView.OnEditorActionListener;
 import com.simplexorg.searchfragment.R;
 import com.simplexorg.searchfragment.search.SearchContract.Presenter;
 import com.simplexorg.searchfragment.search.SearchFragment.OnSearchClickListener;
+import com.simplexorg.searchfragment.view.BaseTextWatcher;
 import com.simplexorg.searchfragment.view.SearchEditText;
 
 import java.util.ArrayList;
@@ -48,7 +49,18 @@ public class SearchView extends BaseSearchView implements OnEditorActionListener
     }
 
     public void setSearchHint(CharSequence searchHint) {
-        mSearchHint = searchHint;
+        if (mSearchText != null) {
+            mSearchText.setHint(searchHint);
+        } else {
+            mSearchHint = searchHint;
+        }
+    }
+
+    @Override
+    public void setSearchText(String text) {
+        if (mSearchText != null) {
+            mSearchText.setText(text);
+        }
     }
 
     public void start() {
@@ -106,7 +118,7 @@ public class SearchView extends BaseSearchView implements OnEditorActionListener
             InputMethodManager in = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (in != null) {
                 in.hideSoftInputFromWindow(mSearchText.getWindowToken(),
-                        0);
+                        InputMethodManager.HIDE_IMPLICIT_ONLY);
             }
         }
     }
@@ -151,22 +163,13 @@ public class SearchView extends BaseSearchView implements OnEditorActionListener
 
     private void setupSearchTextListeners() {
         mSearchText.setOnClickListener((View view) -> mPresenter.onSearchClicked());
-        mSearchText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
+        mSearchText.addTextChangedListener(new BaseTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 mPresenter.onTextChanged(editable.toString());
             }
         });
+
         mSearchText.setOnKeyImeChangeListener(((int keyCode, KeyEvent event) -> {
             if (event != null &&
                     keyCode == KeyEvent.KEYCODE_BACK &&
@@ -175,18 +178,23 @@ public class SearchView extends BaseSearchView implements OnEditorActionListener
             }
             return false;
         }));
+
         mSearchText.setOnEditorActionListener(this);
     }
 
     @Override
     public boolean onEditorAction(TextView textView, int keyCode, KeyEvent keyEvent) {
-        if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_UP &&
-                keyEvent.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
-            if (mOnSearchClickListener != null) {
-                mOnSearchClickListener.onSearchClick(textView.getText().toString());
+        if (keyEvent != null) {
+            if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                    if (mOnSearchClickListener != null) {
+                        mOnSearchClickListener.onSearchClick(textView.getText().toString());
+                    }
+                }
+                return true;
             }
-            return true;
         }
+
         return false;
     }
 

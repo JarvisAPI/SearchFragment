@@ -119,30 +119,29 @@ public class SearchFragment extends Fragment {
         final String DECOR_SUGGEST = "suggest";
         mSearchBaseView = SearchFactory.getInstance().createBaseSearchView();
 
-        if (decorators == null) {
-            return;
-        }
-        String[] decors = decorators.toString().split("\\|");
-        for (String decor : decors) {
-            switch (decor) {
-                case DECOR_NAV:
-                    if (mNavDecor == null) {
-                        mNavDecor = SearchFactory.getInstance().wrapNavDecorator(mSearchBaseView);
-                        mSearchBaseView = mNavDecor;
-                    }
-                    break;
-                case DECOR_ICONS:
-                    if (mIconDecor == null) {
-                        mIconDecor = SearchFactory.getInstance().wrapIconDecorator(mSearchBaseView);
-                        mSearchBaseView = mIconDecor;
-                    }
-                    break;
-                case DECOR_SUGGEST:
-                    if (mSuggestDecor == null) {
-                        mSuggestDecor = SearchFactory.getInstance().wrapSuggestionDecorator(mSearchBaseView);
-                        mSearchBaseView = mSuggestDecor;
-                    }
-                    break;
+        if (decorators != null) {
+            String[] decors = decorators.toString().split("\\|");
+            for (String decor : decors) {
+                switch (decor) {
+                    case DECOR_NAV:
+                        if (mNavDecor == null) {
+                            mNavDecor = SearchFactory.getInstance().wrapNavDecorator(mSearchBaseView);
+                            mSearchBaseView = mNavDecor;
+                        }
+                        break;
+                    case DECOR_ICONS:
+                        if (mIconDecor == null) {
+                            mIconDecor = SearchFactory.getInstance().wrapIconDecorator(mSearchBaseView);
+                            mSearchBaseView = mIconDecor;
+                        }
+                        break;
+                    case DECOR_SUGGEST:
+                        if (mSuggestDecor == null) {
+                            mSuggestDecor = SearchFactory.getInstance().wrapSuggestionDecorator(mSearchBaseView);
+                            mSearchBaseView = mSuggestDecor;
+                        }
+                        break;
+                }
             }
         }
 
@@ -275,6 +274,12 @@ public class SearchFragment extends Fragment {
     public void clearSuggestions() {
         if (mSuggestDecor != null) {
             mSuggestDecor.clearSuggestions();
+        }
+    }
+
+    public void setSearchText(String text) {
+        if (mSearchBaseView != null) {
+            mSearchBaseView.setSearchText(text);
         }
     }
 }

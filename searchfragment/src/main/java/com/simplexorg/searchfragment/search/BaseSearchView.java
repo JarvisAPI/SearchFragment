@@ -13,6 +13,8 @@ public abstract class BaseSearchView implements SearchContract.View {
 
     public abstract void setSearchHint(CharSequence searchHint);
 
+    public abstract void setSearchText(String text);
+
     public abstract void start();
 
     public abstract void clearFocus();

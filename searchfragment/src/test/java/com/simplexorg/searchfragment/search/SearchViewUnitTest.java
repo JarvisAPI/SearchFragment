@@ -19,6 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -74,8 +75,18 @@ public class SearchViewUnitTest {
         verify(mSearchText).setOnEditorActionListener(mSearchView);
     }
 
+
     @Test
-    public void test_onEditorAction() {
+    public void test_onEditorAction_ActionDown() {
+        KeyEvent keyEvent = mock(KeyEvent.class);
+        when(keyEvent.getAction()).thenReturn(KeyEvent.ACTION_DOWN);
+        when(keyEvent.getKeyCode()).thenReturn(KeyEvent.KEYCODE_ENTER);
+
+        assertTrue(mSearchView.onEditorAction(mock(TextView.class), KeyEvent.KEYCODE_ENTER, keyEvent));
+    }
+
+    @Test
+    public void test_onEditorAction_ActionUp() {
         TextView textView = mock(TextView.class);
         Editable editable = mock(Editable.class);
         when(editable.toString()).thenReturn("test");
@@ -83,13 +94,13 @@ public class SearchViewUnitTest {
 
         KeyEvent keyEvent = mock(KeyEvent.class);
         when(keyEvent.getAction()).thenReturn(KeyEvent.ACTION_UP);
-        when(keyEvent.getKeyCode()).thenReturn(KeyEvent.KEYCODE_SEARCH);
+        when(keyEvent.getKeyCode()).thenReturn(KeyEvent.KEYCODE_ENTER);
         // Should not throw null pointer.
-        assertEquals(true, mSearchView.onEditorAction(textView, KeyEvent.KEYCODE_SEARCH, keyEvent));
+        assertEquals(true, mSearchView.onEditorAction(textView, KeyEvent.KEYCODE_ENTER, keyEvent));
 
         OnSearchClickListener onSearchClickListener = mock(OnSearchClickListener.class);
         mSearchView.setOnSearchClickListener(onSearchClickListener);
-        assertEquals(true, mSearchView.onEditorAction(textView, KeyEvent.KEYCODE_SEARCH, keyEvent));
+        assertEquals(true, mSearchView.onEditorAction(textView, KeyEvent.KEYCODE_ENTER, keyEvent));
         verify(onSearchClickListener).onSearchClick("test");
 
         when(keyEvent.getKeyCode()).thenReturn(KeyEvent.KEYCODE_0);
