@@ -20,6 +20,7 @@ public interface SearchContract {
         void removeText();
 
         void initDisplay();
+
     }
 
     interface Presenter extends BasePresenter {

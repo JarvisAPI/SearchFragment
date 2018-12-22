@@ -105,8 +105,9 @@ public class SearchSuggestionDecorator extends SearchDecorator implements OnSugg
 
     @Override
     public void onSuggestionObtained(List<Suggestion> suggestions) {
-        mSuggestionAdapter.setSuggestions(suggestions);
-
+        if (!mSearchText.getText().toString().isEmpty()) {
+            mSuggestionAdapter.setSuggestions(suggestions);
+        }
     }
 
     public void onSaveInstanceState(Bundle outState) {
